@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <style>
+div.tooltip {	
+    position: absolute;			
+    text-align: center;			
+    width: 60px;					
+    height: 28px;					
+    padding: 2px;				
+    font: 12px sans-serif;		
+    background: lightsteelblue;	
+    border: 0px;		
+    border-radius: 8px;			
+    pointer-events: none;			
+}
+    </style>
+  </head>
+  <body>
+    <h1>Example 1</h1><div id="ex1"></div>
+    <h1>Example 2</h1><div id="ex2"></div>
+    <h1>Example 3</h1><div id="ex3"></div>
+    <h1>Example 4</h1><div id="ex4"></div>
+    <h1>Example 5</h1><div id="ex5"></div>
+    <h1>Example 6</h1><div id="ex6"></div>
+    <h1>Example 7</h1><div id="ex7"></div>
+    <script>
+d3.select("body").append("div").text("myDiv");
+
+d3.select("#ex1").append("svg").attr("width", 50).attr("height", 50).style("border", "1px solid black").append("circle").attr("cx", 25).attr("cy", 25).attr("r", 24).style("fill", "purple");
+
+// Example 2: Add 3 paragraphs
+var theData = [ 10, 20, 30 ];
+d3.select("#ex2").selectAll("p").data(theData).enter().append("p").text("hello ");
+
+// Example 3: Use JSON data
+var theData = [ {"from": 10, "to": 20}, {"from": 25, "to": 30}, {"from": 40, "to": 60} ];
+d3.select("#ex3").selectAll("p").data(theData).enter().append("p").text( function (d) { return d.from + "-" + d.to; } );
+
+// Example 4: Use data and index
+d3.select("#ex4").selectAll("p").data(theData).enter().append("p").text( function(d,i) {return i + ":" + d;} );
+
+// Example 5: rectangle
+d3.select("#ex5").append("svg").attr("width", "100%").attr("height", 50).append("rect").attr("x", 0).attr("y", 0).attr("rx", 5).attr("ry", 5).attr("width", "100%").attr("height", 10).style("fill", "blue");
+
+// Example 6: scale data
+var sc = d3.scaleLinear().domain([0,248956422]).range([0,800]);
+var data = [ {"from": 235195958, "to": 239388311}, {"from": 224833204, "to": 232792724}, {"from": 237994233, "to": 242379323} ];
+var container = d3.select("#ex6").append("svg").attr("id", "svg6").attr("width", "800").attr("height", data.length * 21 + 4);
+container.append("rect").attr("id", "ex6rect").attr("x", 0).attr("y", 0).attr("rx", 5).attr("ry", 5).attr("width", "800").attr("height", 1 + data.length * (20+1)).style("fill", "white").style("stroke-width", "1").style("stroke", "grey");
+//var xAxis = d3.axisBottom(sc).tickFormat(function(d){ return d.x; });
+var rectGroup = container.append("g"); //.call(xAxis);
+var rectangles = rectGroup.selectAll("rect").data(data).enter().append("rect");
+rectangles
+  .attr("x", function(d) {console.log(sc(d.from)); return sc(d.from);} )
+  .attr("y", function(d,i) {return 1+i*21;} )
+  .attr("rx", 3)
+  .attr("ry", 3)
+  .attr("width", function(d) {console.log(sc(d.to)); return sc(d.to) - sc(d.from);})
+  .attr("height", 20)
+  .style("fill", "blue");
+
+// Example 7: Tooltip
+// Define the div for the tooltip
+var div = d3.select("body").append("div")	
+    .attr("class", "tooltip")				
+    .style("opacity", 0);
+d3.select("#ex7").append("svg").attr("width", "100%").attr("height", 50).append("rect").attr("x", 0).attr("y", 0).attr("rx", 5).attr("ry", 5).attr("width", "100%").attr("height", 10).style("fill", "blue")
+  .on("mouseover", function(d) {		
+            div.transition()		
+                .duration(200)		
+                .style("opacity", .9);		
+            div	.html("Hello" + "<br/>"  + "World")	
+                .style("left", (d3.event.pageX) + "px")		
+                .style("top", (d3.event.pageY - 28) + "px");	
+            })					
+        .on("mouseout", function(d) {		
+            div.transition()		
+                .duration(500)		
+                .style("opacity", 0);	
+        })
+    </script>
+  </body>
+</html>
+
