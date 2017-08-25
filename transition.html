@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <style>
+#csvdata {
+    display: none;
+}
+    </style>
+  </head>
+  <body>
+<h1>Transition</h1>
+<pre id="csvdata">
+id,start,end,row,color
+1,10,18,0,blue
+2,25,40,1,red
+3,50,80,2,green
+4,85,90,3,orange
+</pre>
+
+    <script>
+var raw = d3.select("#csvdata").text();
+var data = d3.csvParse(raw);
+
+var current = 0;
+
+function toggle() {
+	current = current == 0 ? 1 : 0;
+	if (current == 0) {
+		data.forEach(function (e, i) {
+			e.row = i
+		})
+	} else {
+		data.forEach(function (e, i) {
+			e.row = 0
+		})
+	}
+
+	update();
+}
+
+var sc = d3.scaleLinear().domain([0, 100]).range([0, 1000]);
+var container = d3.select("body").append("svg").attr("id", "svg6").attr("width", "1000").attr("height", data.length * 21 + 4);
+container.append("rect").attr("id", "ex6rect").attr("x", 0).attr("y", 0).attr("rx", 5).attr("ry", 5).attr("width", "1000").attr("height", 1 + data.length * (20 + 1)).style("fill", "white").style("stroke-width", "1").style("stroke", "grey");
+var rectGroup = container.append("g");
+
+function update() {
+	var rectangles = rectGroup.selectAll("rect").data(data, function (d) {
+			return d.id;
+		});
+	rectangles.exit().remove();
+	var enterRects = rectangles.enter().append("rect")
+		.attr("x", function (d) {
+			return sc(d.start);
+		})
+		.attr("y", function (d, i) {
+			return 1 + d.row * 21;
+		})
+		.attr("rx", 3)
+		.attr("ry", 3)
+		.attr("width", function (d) {
+			return sc(d.end) - sc(d.start);
+		})
+		.attr("height", 20)
+		.style("fill", function (d) {
+			return d.color;
+		})
+
+		rectangles.transition().duration(500)
+		.attr("y", function (d, i) {
+			return 1 + d.row * 21;
+		});
+}
+
+update();
+    </script>
+<br />
+<input type="button" name="toggle" value="toggle" onclick="toggle()" />
+  </body>
+</html>
