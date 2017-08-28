@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <!-- See https://jsfiddle.net/Q5Jag/2883/ -->
+  <head>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <style>
+    </style>
+  </head>
+  <body>
+<h1>Height</h1>
+    <script>
+var container = d3.select("body").append("svg").attr("id", "topsvg").attr("width", "100%");
+
+var data = [0,1,2,3,4,5,6,7,8,9];
+
+var block = container.selectAll("svg").data(data).enter().append("svg");
+block.attr("id", function(d,i) {return `svg${i}`}).append("rect").attr("id", function(d,i) {return `rect${i}`}).attr("x", 30).attr("rx", 5).attr("ry", 5).attr("width", "95%").attr("height", function(d) {return Math.floor(Math.random()*40)+25}).style("fill", "white").style("stroke-width", "1").style("stroke", "grey");
+
+var y = 0;
+for (var i=0; i<data.length; i++ ) {
+  var node = container.select(`#svg${i}`);
+  node.attr("y", y);
+  node.append("text").attr("x", 20).attr("y", 15).attr("font-family", "Verdana").attr("font-size", 15).attr("font-weight", "700").attr("text-anchor", "end").attr("fill", "grey").text(`${i+1}`);
+  y += node.node().getBBox().height + 5;
+}
+
+container.attr("height", container.node().getBBox().height);
+    </script>
+  </body>
+</html>
