@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" /> 
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <style>
+table,
+th,
+td {
+  border: 1px solid black;
+}
+    </style>
+  </head>
+  <body>
+
+    <script>
+"use strict;";
+
+let cols = 7;
+
+function addTable(cols) {
+  let nbrows = Math.floor(Math.pow(2, cols - 1));
+  var t = d3.select("body").append("table").attr("style", "width:100%");
+  printRow(t, t.append("tr"), nbrows, "1");
+  return t;
+}
+
+function printRow(t, tr, n, id) {
+  if (n == 1) {
+    tr.append("td").attr("rowspan", 1).attr("id", id).text(n);
+  } else {
+    tr.append("td").attr("rowspan", n).attr("id", id).text(n);
+    printRow(t, tr, n / 2, id + ".1");
+    printRow(t, t.append("tr"), n / 2, id + ".2");
+  }
+}
+
+let t = addTable(cols);
+
+</script>
+
+	</body>
+</html>
