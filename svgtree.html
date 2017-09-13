@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" /> 
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <style>
+    </style>
+  </head>
+  <body>
+<svg witdh="1024" height="1024" viewBox="0 0 1024 1024"></svg>
+
+    <script>
+"use strict;";
+
+let cols = 7;
+
+let width = 1024;
+let height = 1024;
+let cellspacing = 1;
+
+var data = [];
+let nbcells = Math.floor(Math.pow(2, cols)) - 1;
+let colsize = (width/cols);
+
+for (let i = 0; i < nbcells; i++) {
+  let col = Math.floor(Math.log2(i + 1));
+  let row = (i + 1) - Math.pow(2, col);
+  let rowsize = height / Math.pow(2, col);
+  data[i] = {
+    "col": col,
+    "row": row,
+    "x": col * colsize,
+    "y": row * rowsize,
+    "w": colsize - cellspacing,
+    "h": rowsize - cellspacing,
+  };
+   console.log(data[i]);
+}
+
+ d3.select("svg").selectAll("rect").data(data).enter().append("rect").attr("x", d => d.x).attr("y", d => d.y).attr("width", d => d.w).attr("height", d => d.h).attr("fill", "grey");
+ // .attr("stroke", "black").attr("stroke-width",1);
+</script>
+
+	</body>
+</html>
